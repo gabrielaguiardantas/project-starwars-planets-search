@@ -1,12 +1,17 @@
 import React from 'react';
 import './App.css';
+import Filter from './components/Filter';
 import Table from './components/Table';
 import FetchProvider from './context/FetchProvider';
+import FilterProvider from './context/FilterProvider';
 
 function App() {
   return (
     <FetchProvider>
-      <Table />
+      <FilterProvider>
+        <Filter />
+        <Table />
+      </FilterProvider>
     </FetchProvider>
   );
 }

@@ -18,6 +18,10 @@ function FetchProvider({ children }) {
       .finally(() => setLoading(false));
   }, []);
 
+  if (loading) {
+    return <div>Carregando...</div>;
+  }
+
   return (
     <FetchContext.Provider value={ [makeFetch, loading] }>
       <div>
@@ -28,7 +32,7 @@ function FetchProvider({ children }) {
 }
 
 FetchProvider.propTypes = {
-  children: PropTypes.shape(PropTypes.any.isRequired).isRequired,
+  children: PropTypes.element.isRequired,
 };
 
 export default FetchProvider;

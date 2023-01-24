@@ -1,12 +1,11 @@
 import React, { useContext } from 'react';
 import FetchContext from '../context/FetchContext';
+import FilterContext from '../context/FilterContext';
 
 function Table() {
-  const [makeFetch, loading] = useContext(FetchContext);
+  const [makeFetch] = useContext(FetchContext);
+  const [filteredPlanets] = useContext(FilterContext);
 
-  if (loading) {
-    return <div>Carregando...</div>;
-  }
   return (
     <table>
       <thead>
@@ -19,7 +18,7 @@ function Table() {
       </thead>
       <tbody>
         {
-          makeFetch.map((planet) => (
+          filteredPlanets.map((planet) => (
             <tr key={ planet.name }>
               {
                 Object.values(planet)
