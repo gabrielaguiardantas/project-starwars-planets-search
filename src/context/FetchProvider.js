@@ -19,7 +19,7 @@ function FetchProvider({ children }) {
   }, []);
 
   if (loading) {
-    return <div>Carregando...</div>;
+    return <div id="loading">Carregando...</div>;
   }
 
   return (

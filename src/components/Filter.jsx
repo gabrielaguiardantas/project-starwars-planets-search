@@ -16,7 +16,6 @@ function Filter() {
     const columnFilter = document.getElementById('Column').value;
     const comparisonFilter = document.getElementById('Operator').value;
     const valueFilter = document.getElementById('valueFilter').value;
-    console.log(columnFilter, comparisonFilter, valueFilter);
     setFilter([...filter, { columnFilter, comparisonFilter, valueFilter }]);
     const filteredByOptions = filteredPlanets.filter((planet) => {
       if (comparisonFilter === 'maior que') {
@@ -31,7 +30,7 @@ function Filter() {
   };
 
   return (
-    <div>
+    <header>
       <label htmlFor="planetNameFilter">
         Filtro por nome
         <input
@@ -83,7 +82,7 @@ function Filter() {
       >
         Filtrar
       </button>
-    </div>
+    </header>
   );
 }
 
