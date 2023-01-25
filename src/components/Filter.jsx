@@ -1,10 +1,10 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import FetchContext from '../context/FetchContext';
 import FilterContext from '../context/FilterContext';
 
 function Filter() {
   const [makeFetch] = useContext(FetchContext);
-  const [filteredPlanets, setFilteredPlanets] = useContext(FilterContext);
+  const setFilteredPlanets = useContext(FilterContext)[1];
   const [filter, setFilter] = useState([]);
   const columnOpt = ['population',
     'orbital_period', 'diameter', 'rotation_period', 'surface_water'];
@@ -15,23 +15,41 @@ function Filter() {
     setFilteredPlanets(filteredByName);
   };
 
-  const filteredPlanetsByOptions = () => {
+  const filtersArrayUpdate = () => {
     const columnFilter = document.getElementById('Column').value;
     const comparisonFilter = document.getElementById('Operator').value;
     const valueFilter = document.getElementById('valueFilter').value;
     setFilter([...filter, { columnFilter, comparisonFilter, valueFilter }]);
     setColumnOptions(columnOptions.filter((column) => column !== columnFilter));
-    const filteredByOptions = filteredPlanets.filter((planet) => {
-      if (comparisonFilter === 'maior que') {
-        return Number(planet[columnFilter]) > Number(valueFilter);
-      }
-      if (comparisonFilter === 'menor que') {
-        return Number(planet[columnFilter]) < Number(valueFilter);
-      }
-      return Number(planet[columnFilter]) === Number(valueFilter);
-    });
-    setFilteredPlanets(filteredByOptions);
   };
+
+  const filteredPlanetsByOptions = () => {
+    let resultFilteredPlanets = makeFetch;
+    if (filter.length < 1) {
+      setFilteredPlanets(makeFetch);
+    } else {
+      filter.forEach((eachFilter) => {
+        const updatedTable = resultFilteredPlanets.filter((planet) => {
+          if (eachFilter.comparisonFilter === 'maior que') {
+            return Number(planet[eachFilter.columnFilter])
+            > Number(eachFilter.valueFilter);
+          }
+          if (eachFilter.comparisonFilter === 'menor que') {
+            return Number(planet[eachFilter.columnFilter])
+            < Number(eachFilter.valueFilter);
+          }
+          return Number(planet[eachFilter.columnFilter])
+          === Number(eachFilter.valueFilter);
+        });
+        resultFilteredPlanets = updatedTable;
+      });
+      setFilteredPlanets(resultFilteredPlanets);
+    }
+  };
+
+  useEffect(() => {
+    filteredPlanetsByOptions();
+  }, [filter]);
 
   const removeFilter = (eachFilter) => {
     const removeFilterArray = filter
@@ -100,7 +118,7 @@ function Filter() {
       <button
         type="button"
         data-testid="button-filter"
-        onClick={ filteredPlanetsByOptions }
+        onClick={ filtersArrayUpdate }
       >
         Filtrar
       </button>
