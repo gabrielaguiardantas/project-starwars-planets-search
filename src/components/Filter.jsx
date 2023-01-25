@@ -6,6 +6,9 @@ function Filter() {
   const [makeFetch] = useContext(FetchContext);
   const [filteredPlanets, setFilteredPlanets] = useContext(FilterContext);
   const [filter, setFilter] = useState([]);
+  const columnOpt = ['population',
+    'orbital_period', 'diameter', 'rotation_period', 'surface_water'];
+  const [columnOptions, setColumnOptions] = useState(columnOpt);
 
   const handlePlanetNameChange = (value) => {
     const filteredByName = makeFetch.filter((planet) => planet.name.includes(value));
@@ -17,6 +20,7 @@ function Filter() {
     const comparisonFilter = document.getElementById('Operator').value;
     const valueFilter = document.getElementById('valueFilter').value;
     setFilter([...filter, { columnFilter, comparisonFilter, valueFilter }]);
+    setColumnOptions(columnOptions.filter((column) => column !== columnFilter));
     const filteredByOptions = filteredPlanets.filter((planet) => {
       if (comparisonFilter === 'maior que') {
         return Number(planet[columnFilter]) > Number(valueFilter);
@@ -27,6 +31,19 @@ function Filter() {
       return Number(planet[columnFilter]) === Number(valueFilter);
     });
     setFilteredPlanets(filteredByOptions);
+  };
+
+  const removeFilter = (eachFilter) => {
+    const removeFilterArray = filter
+      .filter((numericFilter) => numericFilter !== eachFilter);
+    setFilter(removeFilterArray);
+    setColumnOptions([...columnOptions, eachFilter.columnFilter]);
+  };
+
+  const removeAllFilters = () => {
+    setFilter([]);
+    setColumnOptions(columnOpt);
+    setFilteredPlanets(makeFetch);
   };
 
   return (
@@ -47,42 +64,16 @@ function Filter() {
           id="Column"
           data-testid="column-filter"
         >
-          <option
-            value="population"
-            defaultValue
-            hidden={ filter
-              .some((element) => element.columnFilter === 'population') }
-          >
-            population
-          </option>
-          <option
-            value="orbital_period"
-            hidden={ filter
-              .some((element) => element.columnFilter === 'orbital_period') }
-          >
-            orbital_period
-          </option>
-          <option
-            value="diameter"
-            hidden={ filter
-              .some((element) => element.columnFilter === 'diameter') }
-          >
-            diameter
-          </option>
-          <option
-            value="rotation_period"
-            hidden={ filter
-              .some((element) => element.columnFilter === 'rotation_period') }
-          >
-            rotation_period
-          </option>
-          <option
-            value="surface_water"
-            hidden={ filter
-              .some((element) => element.columnFilter === 'surface_water') }
-          >
-            surface_water
-          </option>
+          {
+            columnOptions.map((column, index) => (
+              <option
+                key={ index }
+                defaultValue={ column }
+              >
+                {column}
+              </option>
+            ))
+          }
         </select>
       </label>
       <label htmlFor="Operator">
@@ -115,17 +106,29 @@ function Filter() {
       </button>
       {
         filter !== [] && filter.map((eachFilter, index) => (
-          <div key={ index }>
+          <div key={ index } data-testid="filter">
             {eachFilter.columnFilter}
             {' '}
             {eachFilter.comparisonFilter}
             {' '}
             {eachFilter.valueFilter}
             {' '}
-            <button type="button">Excluir</button>
+            <button
+              type="button"
+              onClick={ () => removeFilter(eachFilter) }
+            >
+              Excluir
+            </button>
           </div>
         ))
       }
+      <button
+        type="button"
+        data-testid="button-remove-filters"
+        onClick={ removeAllFilters }
+      >
+        Remover Filtros
+      </button>
     </header>
   );
 }
