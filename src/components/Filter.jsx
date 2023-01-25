@@ -47,11 +47,42 @@ function Filter() {
           id="Column"
           data-testid="column-filter"
         >
-          <option value="population" defaultValue>population</option>
-          <option value="orbital_period">orbital_period</option>
-          <option value="diameter">diameter</option>
-          <option value="rotation_period">rotation_period</option>
-          <option value="surface_water">surface_water</option>
+          <option
+            value="population"
+            defaultValue
+            hidden={ filter
+              .some((element) => element.columnFilter === 'population') }
+          >
+            population
+          </option>
+          <option
+            value="orbital_period"
+            hidden={ filter
+              .some((element) => element.columnFilter === 'orbital_period') }
+          >
+            orbital_period
+          </option>
+          <option
+            value="diameter"
+            hidden={ filter
+              .some((element) => element.columnFilter === 'diameter') }
+          >
+            diameter
+          </option>
+          <option
+            value="rotation_period"
+            hidden={ filter
+              .some((element) => element.columnFilter === 'rotation_period') }
+          >
+            rotation_period
+          </option>
+          <option
+            value="surface_water"
+            hidden={ filter
+              .some((element) => element.columnFilter === 'surface_water') }
+          >
+            surface_water
+          </option>
         </select>
       </label>
       <label htmlFor="Operator">
@@ -82,6 +113,19 @@ function Filter() {
       >
         Filtrar
       </button>
+      {
+        filter !== [] && filter.map((eachFilter, index) => (
+          <div key={ index }>
+            {eachFilter.columnFilter}
+            {' '}
+            {eachFilter.comparisonFilter}
+            {' '}
+            {eachFilter.valueFilter}
+            {' '}
+            <button type="button">Excluir</button>
+          </div>
+        ))
+      }
     </header>
   );
 }
