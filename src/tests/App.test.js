@@ -46,6 +46,9 @@ describe('some tests in the filter component', () => {
     })
     expect(await screen.findByRole('spinbutton')).toBeInTheDocument();
     userEvent.type(await screen.findByRole('spinbutton'), '4500000000');
+    userEvent.click(await screen.findByRole('button', {
+      name: /filtrar/i
+    }));
     expect((await screen.findByRole('table')).childElementCount).toBe(2);
     expect(await screen.findByRole('cell', {
       name: /coruscant/i
