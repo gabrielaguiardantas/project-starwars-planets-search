@@ -22,14 +22,27 @@ function Table() {
             <tr key={ planet.name }>
               {
                 Object.values(planet)
-                  .map((planetProperty, planetPropertyIndex) => (
-                    <td
-                      key={ planetPropertyIndex }
-                      className="planetLine"
-                    >
-                      {planetProperty}
-                    </td>
-                  ))
+                  .map((planetProperty, planetPropertyIndex) => {
+                    if (planetPropertyIndex === 0) {
+                      return (
+                        <td
+                          key={ planetPropertyIndex }
+                          className="planetLine"
+                          data-testid="planet-name"
+                        >
+                          {planetProperty}
+                        </td>
+                      );
+                    }
+                    return (
+                      <td
+                        key={ planetPropertyIndex }
+                        className="planetLine"
+                      >
+                        {planetProperty}
+                      </td>
+                    );
+                  })
               }
             </tr>
           ))

@@ -5,11 +5,12 @@ import FilterContext from '../context/FilterContext';
 
 function Filter() {
   const [makeFetch] = useContext(FetchContext);
-  const setFilteredPlanets = useContext(FilterContext)[1];
+  const [filteredPlanets, setFilteredPlanets] = useContext(FilterContext);
   const [filter, setFilter] = useState([]);
   const columnOpt = ['population',
     'orbital_period', 'diameter', 'rotation_period', 'surface_water'];
   const [columnOptions, setColumnOptions] = useState(columnOpt);
+  const [sortRender, setSortRender] = useState(false);
 
   const handlePlanetNameChange = (value) => {
     const filteredByName = makeFetch.filter((planet) => planet.name.includes(value));
@@ -49,8 +50,10 @@ function Filter() {
   };
 
   useEffect(() => {
-    filteredPlanetsByOptions();
-  }, [filter]);
+    if (!sortRender) {
+      filteredPlanetsByOptions();
+    }
+  }, [filter, sortRender]);
 
   const removeFilter = (eachFilter) => {
     const removeFilterArray = filter
@@ -63,6 +66,24 @@ function Filter() {
     setFilter([]);
     setColumnOptions(columnOpt);
     setFilteredPlanets(makeFetch);
+  };
+
+  const sortPlanets = () => {
+    const sortValueAsc = document.getElementsByName('columnSortType')[0].checked;
+    const sortType = document.getElementById('columnSort').value;
+    if (sortValueAsc) {
+      const sortedPlanets = [...filteredPlanets]
+        .sort((a, b) => (a[sortType] === 'unknown') - (b[sortType] === 'unknown')
+        || a[sortType] - b[sortType]);
+      setSortRender(true);
+      setFilteredPlanets(sortedPlanets);
+    } else {
+      const sortedPlanets = [...filteredPlanets]
+        .sort((a, b) => (a[sortType] === 'unknown') - (b[sortType] === 'unknown')
+        || b[sortType] - a[sortType]);
+      setSortRender(true);
+      setFilteredPlanets(sortedPlanets);
+    }
   };
 
   return (
@@ -141,6 +162,46 @@ function Filter() {
           </div>
         ))
       }
+      <label htmlFor="columnSort">
+        Ordenar
+        <select
+          name="columnSort"
+          id="columnSort"
+          data-testid="column-sort"
+        >
+          {
+            columnOpt.map((column, index) => (
+              <option
+                key={ index }
+                defaultValue={ column }
+              >
+                {column}
+              </option>
+            ))
+          }
+        </select>
+      </label>
+      <label htmlFor="columnSortType">
+        <input
+          type="radio"
+          name="columnSortType"
+          id="columnSortType"
+          value="ASC"
+          data-testid="column-sort-input-asc"
+        />
+        Ascendente
+        <input
+          type="radio"
+          name="columnSortType"
+          id="columnSortType"
+          value="DESC"
+          data-testid="column-sort-input-desc"
+        />
+        Descendente
+        <button type="button" onClick={ sortPlanets } data-testid="column-sort-button">
+          Ordenar
+        </button>
+      </label>
       <button
         type="button"
         data-testid="button-remove-filters"

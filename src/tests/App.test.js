@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { act, render, screen } from '@testing-library/react';
+import { act, render, screen, waitFor } from '@testing-library/react';
 import App from '../App';
 import fetchData from '../data/fetchData';
 import userEvent from '@testing-library/user-event';
@@ -38,7 +38,7 @@ describe('some tests in the filter component', () => {
     userEvent.type(await screen.findByRole('textbox', {
       name: /filtro por nome/i
     }), 'aa');
-    expect((await screen.findByRole('table')).childElementCount).toBe(2);
+    expect((await screen.findByRole('table')).rows.length).toBe(2);
   })
   it('has a numeric filter and works properly', async () => {
     act(() => {
@@ -49,9 +49,108 @@ describe('some tests in the filter component', () => {
     userEvent.click(await screen.findByRole('button', {
       name: /filtrar/i
     }));
-    expect((await screen.findByRole('table')).childElementCount).toBe(2);
+    expect((await screen.findByRole('table')).rows.length).toBe(2);
     expect(await screen.findByRole('cell', {
       name: /coruscant/i
     })).toBeInTheDocument();
+
+    //limpando tudo 
+    userEvent.click(await screen.findByRole('button', {
+      name: /remover filtros/i
+    }))
+
+    //começando uma filtragem
+    userEvent.selectOptions(await screen.findByRole('combobox', {
+      name: /coluna/i
+    }), 'rotation_period');
+    userEvent.selectOptions(await screen.findByRole('combobox', {
+      name: /operador/i
+    }), 'menor que');
+    userEvent.clear(await screen.findByRole('spinbutton'));
+    userEvent.type(await screen.findByRole('spinbutton'), '18');
+    userEvent.click(await screen.findByRole('button', {
+      name: /filtrar/i
+    }));
+    expect((await screen.findByRole('table')).rows.length).toBe(2);
+    expect(await screen.findByRole('cell', {
+      name: /bespin/i
+    })).toBeInTheDocument();
+
+    //limpando tudo
+    userEvent.click(await screen.findByRole('button', {
+      name: /remover filtros/i
+    }))
+
+    //começando uma segunda filtragem
+    userEvent.selectOptions(await screen.findByRole('combobox', {
+      name: /coluna/i
+    }), 'rotation_period');
+    userEvent.selectOptions(await screen.findByRole('combobox', {
+      name: /operador/i
+    }), 'igual a');
+    userEvent.clear(await screen.findByRole('spinbutton'));
+    userEvent.type(await screen.findByRole('spinbutton'), '12');
+    userEvent.click(await screen.findByRole('button', {
+      name: /filtrar/i
+    }));
+    expect((await screen.findByRole('table')).rows.length).toBe(2);
+    expect(await screen.findByRole('cell', {
+      name: /bespin/i
+    })).toBeInTheDocument();
+  })
+  it('has a possibility to delete a created filter', async () => {
+    act(() => {
+      render(<App />)
+    })
+    userEvent.selectOptions(await screen.findByRole('combobox', {
+      name: /coluna/i
+    }), 'rotation_period');
+    userEvent.selectOptions(await screen.findByRole('combobox', {
+      name: /operador/i
+    }), 'igual a');
+    userEvent.clear(await screen.findByRole('spinbutton'));
+    userEvent.type(await screen.findByRole('spinbutton'), '12');
+    userEvent.click(await screen.findByRole('button', {
+      name: /filtrar/i
+    }));
+    expect((await screen.findByRole('table')).rows.length).toBe(2);
+    expect(await screen.findByRole('cell', {
+      name: /bespin/i
+    })).toBeInTheDocument();
+    userEvent.click(await screen.findByRole('button', {
+      name: /excluir/i
+    }));
+    expect((await screen.findByRole('table')).rows.length).toBe(11);
+  })
+  it('has a possibility to sort ascendent or descendent the elements on table and this tool work properly', async () => {
+    act(() => {
+      render(<App />)
+    })
+    userEvent.selectOptions(await screen.findByRole('combobox', {
+      name: /ordenar/i
+    }), 'rotation_period');
+    userEvent.click(await screen.findByTestId('column-sort-input-desc'));
+    userEvent.click(await screen.findByRole('button', {
+      name: /ordenar/i
+    }));
+
+    waitFor(() => {
+      const cellUpdated = screen.getAllByRole('row')[1].firstElementChild.innerHTML;
+      const tableUpdated = screen.getByRole('table').rows[1].firstElementChild;
+      console.log(cellUpdated);
+      expect((screen.getByRole('table')).rows[1].firstElementChild).toHaveProperty('innerHTML', 'Kaminooooooo');
+    })
+
+
+
+    // segunda filtragem para confirmação do elemento com valor desconhecido em último na ordem
+    userEvent.selectOptions(await screen.findByRole('combobox', {
+      name: /ordenar/i
+    }), 'surface_water');
+    userEvent.click(await screen.findByTestId('column-sort-input-desc'));
+    userEvent.click(await screen.findByRole('button', {
+      name: /ordenar/i
+    }));
+
   })
 })
