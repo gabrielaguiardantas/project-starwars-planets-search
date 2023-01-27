@@ -124,33 +124,30 @@ describe('some tests in the filter component', () => {
   })
   it('has a possibility to sort ascendent or descendent the elements on table and this tool work properly', async () => {
     act(() => {
-      render(<App />)
+      render(<App />);
     })
-    userEvent.selectOptions(await screen.findByRole('combobox', {
+    
+    await waitFor(() => {
+    userEvent.selectOptions(screen.getByRole('combobox', {
       name: /ordenar/i
     }), 'rotation_period');
-    userEvent.click(await screen.findByTestId('column-sort-input-desc'));
-    userEvent.click(await screen.findByRole('button', {
+    userEvent.click(screen.getByTestId('column-sort-input-desc'));
+    userEvent.click(screen.getByRole('button', {
       name: /ordenar/i
     }));
-
-    waitFor(() => {
-      const cellUpdated = screen.getAllByRole('row')[1].firstElementChild.innerHTML;
-      const tableUpdated = screen.getByRole('table').rows[1].firstElementChild;
-      console.log(cellUpdated);
-      expect((screen.getByRole('table')).rows[1].firstElementChild).toHaveProperty('innerHTML', 'Kaminooooooo');
+    expect((screen.getByRole('table')).rows[1].firstElementChild.innerHTML).toBe('Kamino');
     })
 
-
-
     // segunda filtragem para confirmação do elemento com valor desconhecido em último na ordem
-    userEvent.selectOptions(await screen.findByRole('combobox', {
+    await waitFor(() => {
+    userEvent.selectOptions(screen.getByRole('combobox', {
       name: /ordenar/i
     }), 'surface_water');
-    userEvent.click(await screen.findByTestId('column-sort-input-desc'));
-    userEvent.click(await screen.findByRole('button', {
+    userEvent.click(screen.getByTestId('column-sort-input-asc'));
+    userEvent.click(screen.getByRole('button', {
       name: /ordenar/i
     }));
-
+    expect((screen.getByRole('table')).rows[10].firstElementChild.innerHTML).toBe('Coruscant');
+  })
   })
 })
