@@ -7,5 +7,8 @@ Décimo quinto projeto do curso de desenvolvimento Web da Trybe e nono projeto d
 
 ## Demonstração: ##
 
+https://github.com/gabrielaguiardantas/project-starwars-planets-search/assets/110852595/d21eda35-0eeb-4942-b291-0f10d1833fed
+
 ## Features implementadas: ##
 
+![features-project15](https://github.com/gabrielaguiardantas/project-starwars-planets-search/assets/110852595/aea1b5bb-9cdf-483a-8be5-123df1d2272b)
