@@ -1,10 +1,11 @@
-# :construction: README em construção ! :construction:
-<!-- Olá, Tryber!
-Esse é apenas um arquivo inicial para o README do seu projeto.
-É essencial que você preencha esse documento por conta própria, ok?
-Não deixe de usar nossas dicas de escrita de README de projetos, e deixe sua criatividade brilhar!
-:warning: IMPORTANTE: você precisa deixar nítido:
-- quais arquivos/pastas foram desenvolvidos por você; 
-- quais arquivos/pastas foram desenvolvidos por outra pessoa estudante;
-- quais arquivos/pastas foram desenvolvidos pela Trybe.
--->
+ # Projeto Starwars Planets Search #
+
+Décimo quinto projeto do curso de desenvolvimento Web da Trybe e nono projeto do módulo de FrontEnd. A aplicação consiste em uma tabela com dados de alguns planetas do universo Star Wars, cujo usuário pode utilizar de diversos filtros para visualizar informações e selecionar planetas específicos. Conhecimentos principais desenvolvidos e aperfeiçoados nesse projeto:
+
+- Context API
+- Hooks
+
+## Demonstração: ##
+
+## Features implementadas: ##
+
